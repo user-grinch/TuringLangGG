@@ -22,4 +22,6 @@ var n: int = 10
 var test: real = 5.5
 var state: boolean = 1
 var name: string = "Hello"
+put "The value of n is ", n, " ", state, " ", test, " ",  name
+
  % put "The factorial of ", n, " is ", factorial (n)

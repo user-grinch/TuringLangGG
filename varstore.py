@@ -63,8 +63,15 @@ class VarStore:
         if val is None:
             val = cls.__getDefaultValue(var_type)
         
+        if val.startswith(('"', "'")) and val.endswith(('"', "'")):
+            val = val[1:-1]
+        
         cls.__store[name] = Var(var_type, val)
         return True
+
+    @classmethod
+    def isValid(cls, name: str) -> bool:
+        return name in cls.__store
 
     @classmethod
     def get(cls, name: str) -> Var:

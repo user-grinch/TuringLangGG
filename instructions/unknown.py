@@ -1,8 +1,8 @@
 
-from instructions.interface.icommnad import ICommand
+from instructions.interface.ibase import IBaseInstruction
 
 
-class CMD_Unknown(ICommand):
+class CMD_Unknown(IBaseInstruction):
     def getPrefix() -> str:
         return 'unknown'
 

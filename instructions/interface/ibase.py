@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-class ICommand(ABC):
+class IBaseInstruction(ABC):
     # Returns the command prefix
     # ie the command name
     @abstractmethod

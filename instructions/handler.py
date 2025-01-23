@@ -1,17 +1,17 @@
-from instructions.io import CMD_Put
+from instructions.io import CMD_Get, CMD_Put
 from instructions.unknown import CMD_Unknown
-from instructions.interface.icommnad import ICommand
+from instructions.interface.ibase import IBaseInstruction
 from instructions.var import CMD_Var
 
 class InstructionHandler():
-    __commands: list[ICommand] = [
-        CMD_Put, CMD_Unknown, CMD_Var
+    __commands: list[IBaseInstruction] = [
+        CMD_Put, CMD_Unknown, CMD_Var, CMD_Get
     ]
 
-    def register(cmd: ICommand):
+    def register(cmd: IBaseInstruction):
         InstructionHandler.__commands.append(cmd)
 
-    def findHandler(prefix: str) -> ICommand:
+    def findHandler(prefix: str) -> IBaseInstruction:
         for e in InstructionHandler.__commands:
             if e.getPrefix() == prefix:
                 return e
@@ -19,7 +19,7 @@ class InstructionHandler():
         return CMD_Unknown
     
     def execute(prefix: str, args: str) -> bool:
-        handler: ICommand = InstructionHandler.findHandler(prefix)
+        handler: IBaseInstruction = InstructionHandler.findHandler(prefix)
         return handler.execute(prefix, args)
 
     

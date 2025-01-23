@@ -47,9 +47,13 @@ class VarStore:
     @classmethod
     def getVariables(cls) -> dict[str, Var]:
         return cls.__store
+    
+    @classmethod
+    def add(cls, name: str, val: str) -> bool:
+        cls.__store[name] = val
 
     @classmethod
-    def add(cls, expression: str) -> bool:
+    def parse(cls, expression: str) -> bool:
         # Expression format: var name :type = value
         pattern = r"var\s+(\w+)\s*:\s*(\w+)\s*(?:=\s*(\S+))?"
         match = re.match(pattern, expression)

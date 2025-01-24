@@ -1,3 +1,4 @@
+import re
 from instructions.interface.ibase import IBaseInstruction
 from parser.expression import ExpressionHandler
 from varstore import Var, VarStore
@@ -23,29 +24,47 @@ class CMD_Put(IBaseInstruction):
     2. execute(prefix: str, other: str) -> bool:
         Processes the output (strings and variables) and displays it.
     """
+    @staticmethod
     def getPrefix() -> str:
         return 'put'
+    
+    @staticmethod
+    def is_quoted(s: str) -> bool:
+        """Check if a string is enclosed in quotes."""
+        return s.startswith(('"', "'")) and s.endswith(('"', "'"))
+    
+    @staticmethod
+    def __split_outside_quotes(s: str) -> list:
+        """
+        Split the input string by commas that are not inside quotes.
+        Supports both single and double quotes.
+        """
+        pattern = r''',(?=(?:[^"'\\]*(?:\\.|['"](?:[^"'\\]*\\.)*[^"'\\]*['"]))*[^"']*$)'''
+        return re.split(pattern, s)
 
-    def execute(prefix: str, other: str) -> bool:
-        skipNewline = other.endswith('..')
+    @classmethod
+    def execute(cls, prefix: str, other: str) -> bool:
+        skip_newline = other.endswith('..')
 
-        if skipNewline:
-            other = other[0:-2].strip()
-        
-        lst = other.split(',')
+        if skip_newline:
+            other = other[:-2].strip()  # Strip '..' and any trailing spaces
 
-        for str in lst:
-            line = str.strip()
-            if line.startswith(('"', "'")) and line.endswith(('"', "'")):
-                print(line[1:-1], end="")
+        lst = cls.__split_outside_quotes(other)
+        for item in lst:
+            line = item.strip()
+            if cls.is_quoted(line):
+                # Remove quotes and print the content
+                print(line[1:-1], end = "")
             else:
                 if VarStore.doesExist(line):
                     data: Var = VarStore.get(line)
-                    print(data.val, end="")
+                    print(data.val, end = "")
                 # else:
-                #     print("Formatting Error: Missing ' or \"")
-        if not skipNewline:
+                #     print(f"Error: Variable '{line}' does not exist", end="")
+
+        if not skip_newline:
             print()
+
         return True
 
 

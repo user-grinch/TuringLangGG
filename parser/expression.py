@@ -70,11 +70,11 @@ class ExpressionHandler():
         return VarStore.add(name, Var(var_type, val))
 
     @classmethod
-    def __parseVarUpdate(cls, prefix: str, args: str) -> bool:
+    def __parseVarUpdate(cls, name: str, args: str) -> bool:
         args = args.strip(':=').strip() # remove thr assignment operator
-        print(VarStore.getVariables())
-        # print(args, ' = ', eval(args, VarStore.getVariables()))
-
+        # print(VarStore.getTable())
+        val = eval(args, VarStore.getTable())
+        VarStore.update(name, val)
         # return VarStore.parse(prefix + ' ' +  args);
 
     @classmethod

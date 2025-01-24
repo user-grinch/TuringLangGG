@@ -1,33 +1,30 @@
- % Accepts a number and calculates its factorial
- 
- % function factorial (n: int) : real
- %      if n = 0 then
- %           result 1
- %      else
- %           result n * factorial (n - 1)
- %      end if
- % end factorial
- % 
- % var n: int
- % loop
- %      put "Please input an integer: " ..
- %      get n
- %      exit when n >= 0
- %      put "Input must be a non-negative integer."
- % end loop
-put "Hello World" % This is a comment
-% full line comment
-put "Hello World without commnets"
+% Function to calculate the factorial of a number
+% function factorial(n: int) : real
+%     if n = 0 then
+%         result 1
+%     else
+%         result n * factorial(n - 1)
+%     end if
+% end factorial
+
+% Print basic outputs and test variables
+put "Hello World"
+put "Hello World without comments"
+
+% Declare and initialize variables
 var n: int := 10
 var test: real := 5.5
 var state: boolean := true
 var name: string := "Hello"
-put "The value of n is ", n, " ", state, " ", test, " ",  name ..
-%put "Test"
-%get n
-%get name
-a := 5
-put a
-a := (a + 10) * 2
-put a 
- % put "The factorial of ", n, " is ", factorial (n)
+
+% Print the values of variables
+put "The value of n is ", n, ", state is ", state, ", test is ", test, ", name is ", name 
+
+% Perform arithmetic operations and print results
+n := 5
+put "Updated value of n: ", n
+n := (n + 10) * 2
+put "Result after calculation: ", n
+
+% Factorial calculation (uncomment to test when function is implemented)
+% put "The factorial of ", n, " is ", factorial(n)

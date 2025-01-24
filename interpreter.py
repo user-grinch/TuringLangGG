@@ -9,4 +9,4 @@ class Interpreter():
         if len(sys.argv) > 1:
             FileHandler.process(sys.argv[1]);
             TokenParser.process()
-            print(VarStore.getVariables())
+            print(VarStore.getVarTable())

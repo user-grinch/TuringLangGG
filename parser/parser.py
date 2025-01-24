@@ -8,7 +8,7 @@ class TokenParser():
         tokens = Tokenizer.getInstructions()
         
         for k, v in tokens.items():
-            if any(':=' in string for string in v):
+            if any('var' in string or ':=' in string for string in v):
                 ExpressionHandler.parse(v[0], v[1])
             else:
                 InstructionHandler.parse(v[0], v[1])

@@ -20,9 +20,18 @@ class Var:
 class VarStore:
     __store: dict[str, Var] = {}
         
+    # Returns the internal Var structure dict
     @classmethod
-    def getVariables(cls) -> dict[str, Var]:
+    def getVarTable(cls) -> dict[str, Var]:
         return cls.__store
+
+    # Returns a formatted key value pair dict
+    @classmethod
+    def getTable(cls) -> dict[str, object]:
+        table = {}
+        for key, var in cls.__store.items():
+            table[key] = var.val
+        return table
     
     @classmethod
     def add(cls, name: str, data: Var) -> bool:
@@ -32,6 +41,15 @@ class VarStore:
             data.val = ExpressionHandler.convertToType(data.val, data.type)
             
         cls.__store[name] = Var(data.type, data.val)
+    
+    @classmethod
+    def update(cls, name: str, val: object) -> bool:
+        if cls.doesExist(name):
+            data :Var = cls.get(name)
+            data.val = val
+            cls.add(name, data)
+        else:
+            print("Invalid variable ", name)
 
     @classmethod
     def doesExist(cls, name: str) -> bool:

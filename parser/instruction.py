@@ -1,10 +1,10 @@
+from exceptions.exceptions import UnknownInstructionException
 from instructions.io import CMD_Get, CMD_Put
-from instructions.unknown import CMD_Unknown
 from instructions.interface.ibase import IBaseInstruction
 
 class InstructionHandler():
     __commands: list[IBaseInstruction] = [
-        CMD_Put, CMD_Unknown, CMD_Get
+        CMD_Put, CMD_Get
     ]
 
     @classmethod
@@ -13,7 +13,7 @@ class InstructionHandler():
             if e.getPrefix() == prefix:
                 return e
             
-        return CMD_Unknown
+        raise UnknownInstructionException(prefix)
     
     @classmethod
     def parse(cls, prefix: str, args: str) -> bool:

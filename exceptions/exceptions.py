@@ -17,3 +17,9 @@ class TypeConversionException(ExceptionBase):
         self.required = required
         self.message = message
         super().__init__(self.message)
+        
+class UnknownInstructionException(ExceptionBase):
+    def __init__(self, name, message="UnknownInstructionException occured"):
+        self.name = name
+        self.message = message
+        super().__init__(self.message)

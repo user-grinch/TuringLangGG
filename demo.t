@@ -17,6 +17,14 @@ var test: real := 5.5
 var state: boolean := true
 var name: string := "Hello"
 
+if n > 0 then
+    put "The number is positive."
+elsif n = 0 then
+    put "The number is zero."
+else
+    put "The number is negative."
+end if
+
 % Print the values of variables
 put "The value of n is ", n, ", state is ", state, ", test is ", test, ", name is ", name 
 

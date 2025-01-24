@@ -1,6 +1,8 @@
 import re
+from exceptions.exceptions import UnknownIdentifierException
 from instructions.interface.ibase import IBaseInstruction
 from parser.expression import ExpressionHandler
+from util import Util
 from varstore import Var, VarStore
 
 
@@ -29,11 +31,6 @@ class CMD_Put(IBaseInstruction):
         return 'put'
     
     @staticmethod
-    def is_quoted(s: str) -> bool:
-        """Check if a string is enclosed in quotes."""
-        return s.startswith(('"', "'")) and s.endswith(('"', "'"))
-    
-    @staticmethod
     def __split_outside_quotes(s: str) -> list:
         """
         Split the input string by commas that are not inside quotes.
@@ -52,15 +49,14 @@ class CMD_Put(IBaseInstruction):
         lst = cls.__split_outside_quotes(other)
         for item in lst:
             line = item.strip()
-            if cls.is_quoted(line):
+            if Util.is_quoted(line):
                 # Remove quotes and print the content
                 print(line[1:-1], end = "")
+            elif VarStore.doesExist(line):
+                data: Var = VarStore.get(line)
+                print(data.val, end = "")
             else:
-                if VarStore.doesExist(line):
-                    data: Var = VarStore.get(line)
-                    print(data.val, end = "")
-                # else:
-                #     print(f"Error: Variable '{line}' does not exist", end="")
+                raise UnknownIdentifierException(line)
 
         if not skip_newline:
             print()
@@ -97,5 +93,4 @@ class CMD_Get(IBaseInstruction):
             curVar :Var = VarStore.get(name)
             return VarStore.add(name, Var(curVar.type, data))
         else:
-            print("Unknown identifier ", name)
-            return False
+            raise UnknownIdentifierException(name)

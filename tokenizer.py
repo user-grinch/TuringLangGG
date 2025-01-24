@@ -2,7 +2,7 @@
 
 class Tokenizer():
     __instructions : dict[int, list[str]] = {}
-    __curLine: int = 1
+    __curLine: int = 0
 
     @classmethod
     def __trimComments(cls, cmd: str) -> str:
@@ -14,8 +14,8 @@ class Tokenizer():
 
     @classmethod
     def process(cls, line: str):
-        line = Tokenizer.__trimComments(line)
-
+        line = Tokenizer.__trimComments(line.strip())
+        cls.__curLine += 1
         if len(line) == 0:
             return
         
@@ -23,4 +23,3 @@ class Tokenizer():
         
         if len(cmds) > 0:
             cls.__instructions[cls.__curLine] = cmds
-            cls.__curLine += 1

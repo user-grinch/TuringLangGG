@@ -1,4 +1,6 @@
 import re
+from exceptions.exceptions import TypeConversionException
+from util import Util
 from varstore import Var, VarStore, eVarType
 
 
@@ -39,7 +41,7 @@ class ExpressionHandler():
             else:
                 return ""
         except:
-            raise TypeError("Variable is of wrong type", var_type)
+            raise TypeConversionException(var_type, eVarType.String)
             
         
     @classmethod
@@ -57,14 +59,10 @@ class ExpressionHandler():
         if val is None:
             val = cls.__getDefaultValue(var_type)
 
-        try:
-            val = cls.convertToType(val, var_type)
-        except Exception as e:
-            print(e.args)
-        
+        val = cls.convertToType(val, var_type)
         
         if var_type == eVarType.String:
-            if val.startswith(('"', "'")) and val.endswith(('"', "'")):
+            if Util.is_quoted(val):
                 val = val[1:-1]
         
         return VarStore.add(name, Var(var_type, val))
@@ -72,14 +70,11 @@ class ExpressionHandler():
     @classmethod
     def __parseVarUpdate(cls, name: str, args: str) -> bool:
         args = args.strip(':=').strip() # remove thr assignment operator
-        # print(VarStore.getTable())
         val = eval(args, VarStore.getTable())
         VarStore.update(name, val)
-        # return VarStore.parse(prefix + ' ' +  args);
 
     @classmethod
     def parse(cls, prefix: str, args: str) -> bool:
-
         if prefix == 'var':
             cls.__parseVarInit(prefix + ' ' +  args)
         else:

@@ -1,5 +1,7 @@
 from enum import Enum
 
+from exceptions.exceptions import UnknownIdentifierException
+
 class eVarType(Enum):
     Boolean = 1
     Int = 2
@@ -49,7 +51,7 @@ class VarStore:
             data.val = val
             cls.add(name, data)
         else:
-            print("Invalid variable ", name)
+            raise UnknownIdentifierException(name)
 
     @classmethod
     def doesExist(cls, name: str) -> bool:

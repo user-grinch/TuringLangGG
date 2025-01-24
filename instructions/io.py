@@ -1,4 +1,5 @@
 from instructions.interface.ibase import IBaseInstruction
+from parser.expression import ExpressionHandler
 from varstore import Var, VarStore
 
 
@@ -38,11 +39,11 @@ class CMD_Put(IBaseInstruction):
             if line.startswith(('"', "'")) and line.endswith(('"', "'")):
                 print(line[1:-1], end="")
             else:
-                if VarStore.isValid(line):
-                    var: Var = VarStore.get(line)
-                    print(var.val, end="")
-                else:
-                    print("Formatting Error: Missing ' or \"")
+                if VarStore.doesExist(line):
+                    data: Var = VarStore.get(line)
+                    print(data.val, end="")
+                # else:
+                #     print("Formatting Error: Missing ' or \"")
         if not skipNewline:
             print()
         return True
@@ -72,8 +73,10 @@ class CMD_Get(IBaseInstruction):
         return 'get'
 
     def execute(prefix: str, name: str) -> bool:
-        if VarStore.isValid(name):
-            return VarStore.add(name, input())
+        if VarStore.doesExist(name):
+            data = input()
+            curVar :Var = VarStore.get(name)
+            return VarStore.add(name, Var(curVar.type, data))
         else:
             print("Unknown identifier ", name)
             return False

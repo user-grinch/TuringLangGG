@@ -18,11 +18,16 @@
 put "Hello World" % This is a comment
 % full line comment
 put "Hello World without commnets"
-var n: int = 10
-var test: real = 5.5
-var state: boolean = 1
-var name: string = "Hello"
+var n: int := 10
+var test: real := 5.5
+var state: boolean := true
+var name: string := "Hello"
 put "The value of n is ", n, " ", state, " ", test, " ",  name ..
-put "Test"
-get n
+%put "Test"
+%get n
+%get name
+a := 5
+put a
+a := (a + 10) * 2
+put a 
  % put "The factorial of ", n, " is ", factorial (n)

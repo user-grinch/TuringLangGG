@@ -1,6 +1,6 @@
 import sys
 from filehandler import FileHandler
-from parser import Parser
+from parser.parser import TokenParser
 from varstore import VarStore
 
 class Interpreter():
@@ -8,5 +8,5 @@ class Interpreter():
     def run(cls):
         if len(sys.argv) > 1:
             FileHandler.process(sys.argv[1]);
-            Parser.process()
+            TokenParser.process()
             print(VarStore.getVariables())

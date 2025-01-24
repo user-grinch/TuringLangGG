@@ -1,4 +1,3 @@
-import re
 from enum import Enum
 
 class eVarType(Enum):
@@ -8,7 +7,7 @@ class eVarType(Enum):
     String = 4
     
 class Var:
-    def __init__(self, var_type: eVarType, val: str):
+    def __init__(self, var_type: eVarType, val):
         self.type = var_type
         self.val = val
 
@@ -20,61 +19,22 @@ class Var:
 
 class VarStore:
     __store: dict[str, Var] = {}
-
-    @staticmethod
-    def __getVarType(name: str) -> eVarType:
-        name = name.lower()
-        if name == "int":
-            return eVarType.Int
-        elif name == "real":
-            return eVarType.Real
-        elif name == "boolean":
-            return eVarType.Boolean
-        else:
-            return eVarType.String
-
-    @staticmethod
-    def __getDefaultValue(var_type: eVarType) -> str:
-        if var_type == eVarType.Int:
-            return "0"
-        elif var_type == eVarType.Real:
-            return "0.0"
-        elif var_type == eVarType.Boolean:
-            return "false"  
-        else:
-            return ""
         
     @classmethod
     def getVariables(cls) -> dict[str, Var]:
         return cls.__store
     
     @classmethod
-    def add(cls, name: str, val: str) -> bool:
-        cls.__store[name] = val
+    def add(cls, name: str, data: Var) -> bool:
+        from parser.expression import ExpressionHandler
+
+        if data.type != eVarType.String:
+            data.val = ExpressionHandler.convertToType(data.val, data.type)
+            
+        cls.__store[name] = Var(data.type, data.val)
 
     @classmethod
-    def parse(cls, expression: str) -> bool:
-        # Expression format: var name :type = value
-        pattern = r"var\s+(\w+)\s*:\s*(\w+)\s*(?:=\s*(\S+))?"
-        match = re.match(pattern, expression)
-        
-        if match is None:
-            return False
-
-        name, type_str, val = match.groups()
-        var_type = cls.__getVarType(type_str)
-
-        if val is None:
-            val = cls.__getDefaultValue(var_type)
-        
-        if val.startswith(('"', "'")) and val.endswith(('"', "'")):
-            val = val[1:-1]
-        
-        cls.__store[name] = Var(var_type, val)
-        return True
-
-    @classmethod
-    def isValid(cls, name: str) -> bool:
+    def doesExist(cls, name: str) -> bool:
         return name in cls.__store
 
     @classmethod

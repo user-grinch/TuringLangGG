@@ -1,4 +1,4 @@
-from exceptions.exceptions import UnknownInstructionException
+from exceptions.exception import UnknownInstructionException
 from instructions.io import CMD_Get, CMD_Put
 from instructions.interface.ibase import IBaseInstruction
 

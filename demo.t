@@ -25,6 +25,10 @@ else
     put "The number is negative."
 end if
 
+if name = "Hello" then
+    put "The name is valid."
+end if
+
 % Print the values of variables
 put "The value of n is ", n, ", state is ", state, ", test is ", test, ", name is ", name 
 

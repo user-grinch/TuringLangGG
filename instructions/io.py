@@ -1,5 +1,5 @@
 import re
-from exceptions.exceptions import UnknownIdentifierException
+from exceptions.exception import UnknownIdentifierException
 from instructions.interface.ibase import IBaseInstruction
 from parser.expression import ExpressionHandler
 from util import Util

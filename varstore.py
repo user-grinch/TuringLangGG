@@ -1,6 +1,6 @@
 from enum import Enum
 
-from exceptions.exceptions import UnknownIdentifierException
+from exceptions.exception import UnknownIdentifierException
 
 class eVarType(Enum):
     Boolean = 1
@@ -39,9 +39,8 @@ class VarStore:
     def add(cls, name: str, data: Var) -> bool:
         from parser.expression import ExpressionHandler
 
-        if data.type != eVarType.String:
-            data.val = ExpressionHandler.convertToType(data.val, data.type)
-            
+        data.val = ExpressionHandler.convertToType(data.val, data.type)
+
         cls.__store[name] = Var(data.type, data.val)
     
     @classmethod

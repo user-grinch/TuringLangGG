@@ -1,4 +1,4 @@
-from exceptions.exceptions import TypeConversionException, UnknownIdentifierException, UnknownInstructionException
+from exceptions.exception import TypeConversionException, UnknownIdentifierException, UnknownInstructionException
 from parser.conditional import ConditionalHandler
 from parser.expression import ExpressionHandler
 from parser.instruction import InstructionHandler

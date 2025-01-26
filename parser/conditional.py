@@ -5,7 +5,7 @@ from varstore import VarStore
 class ConditionalHandler:
     __inConditional: bool = False
     __lastConditionResult: bool = False
-    __skipRest = False
+    __skipRest: bool = False
 
     @classmethod
     def is_in_condition(cls) -> bool:
@@ -29,8 +29,15 @@ class ConditionalHandler:
 
         elif expression.startswith("else"):
             return cls._handle_else()
+        elif expression.startswith("end if"):
+            return cls._handle_end_if()
 
         return False 
+    
+    @classmethod
+    def _handle_end_if(cls, expression: str) -> bool:
+        cls.reset()
+        return True
 
     @classmethod
     def _handle_if(cls, expression: str) -> bool:
@@ -42,11 +49,9 @@ class ConditionalHandler:
 
         condition = match.group(1).strip()
         try:
-            print(condition)
             result = cls.evaluate_condition(condition)
             cls.__inConditional = True
             cls.__skipRest = result
-            print(cls.__skipRest)
             cls.__lastConditionResult = result
             return True
         except Exception as e:
@@ -69,9 +74,7 @@ class ConditionalHandler:
             if cls.__skipRest:
                 cls.__lastConditionResult = False
             else:
-                print(condition)
                 result = cls.evaluate_condition(condition)
-                print(result)
                 cls.__skipRest = cls.__skipRest or result
                 cls.__lastConditionResult = result
 
@@ -98,3 +101,9 @@ class ConditionalHandler:
             return result
         except Exception as e:
             raise Exception(f"Failed to evaluate condition '{condition}': {e}")
+        
+    @classmethod
+    def reset(cls):
+        cls.__inConditional = False
+        cls.__lastConditionResult = False
+        cls.__skipRest = False

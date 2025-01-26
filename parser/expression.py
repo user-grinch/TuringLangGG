@@ -1,5 +1,5 @@
 import re
-from exceptions.exceptions import TypeConversionException
+from exceptions.exception import TypeConversionException
 from util import Util
 from varstore import Var, VarStore, eVarType
 
@@ -38,6 +38,8 @@ class ExpressionHandler():
                 return float(val)
             elif var_type == eVarType.Boolean:
                 return val in ("true", "1")
+            elif var_type == eVarType.String:
+                return val
             else:
                 return ""
         except:
@@ -47,8 +49,8 @@ class ExpressionHandler():
     @classmethod
     def __parseVarInit(cls, expression: str) -> bool:
         # Expression format: var name :type = value
-        pattern = r"var\s+(\w+)\s*:\s*(\w+)\s*(?::=\s*(\S+))?"
-        match = re.match(pattern, expression)
+        pattern = r"var\s+(\w+)\s*:\s*(\w+)\s*(?::=\s*(.+))?"
+        match = re.match(pattern, expression.strip())
         
         if match is None:
             return False

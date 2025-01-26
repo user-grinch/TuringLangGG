@@ -9,7 +9,7 @@ class Interpreter():
         if len(sys.argv) > 1:
             FileHandler.process(sys.argv[1]);
             TokenParser.process()
-            # print(VarStore.getVarTable())
+            print(VarStore.getVarTable())
 
 if __name__ == '__main__':
     Interpreter.run()

@@ -12,7 +12,7 @@ put "Hello World"
 put "Hello World without comments"
 
 % Declare and initialize variables
-var n: int := 10
+var n: int := -10
 var test: real := 5.5
 var state: boolean := true
 var name: string := "Hello"

@@ -10,3 +10,6 @@ class Interpreter():
             FileHandler.process(sys.argv[1]);
             TokenParser.process()
             # print(VarStore.getVarTable())
+
+if __name__ == '__main__':
+    Interpreter.run()

@@ -45,7 +45,6 @@ class ConditionalHandler:
         try:
             result = cls.evaluate_condition(condition)
             cls.__conditionalStack.append({
-                "inConditional": True,
                 "lastConditionResult": result,
                 "skipRest": result
             })

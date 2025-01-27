@@ -9,10 +9,10 @@ class TokenParser():
     '''
         Parses tokens and executes expressions & instructions
     '''
-    def __isExpression(list :list[str]):
+    def __is_expression(list :list[str]):
         return any('var' in string or ':=' in string for string in list)
     
-    def __isConditional(list :list[str]):
+    def __is_conditional(list :list[str]):
         return any('if' in string for string in list) or any('elsif' in string for string in list) or any('else' in string for string in list)
     
     @classmethod
@@ -21,9 +21,9 @@ class TokenParser():
         
         for k, v in tokens.items():
             try:
-                if cls.__isExpression(v):
+                if cls.__is_expression(v):
                     ExpressionHandler.parse(v[0], v[1])
-                elif cls.__isConditional(v):
+                elif cls.__is_conditional(v):
                     text = v[0]
                     if (len(v) >= 2):
                         text += v[1]

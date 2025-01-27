@@ -39,7 +39,7 @@ class VarStore:
     def add(cls, name: str, data: Var) -> bool:
         from parser.expression import ExpressionHandler
 
-        data.val = ExpressionHandler.convertToType(data.val, data.type)
+        data.val = ExpressionHandler.convert_to_type(data.val, data.type)
 
         cls.__store[name] = Var(data.type, data.val)
     

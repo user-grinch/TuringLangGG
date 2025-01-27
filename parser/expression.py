@@ -7,7 +7,7 @@ from varstore import Var, VarStore, eVarType
 class ExpressionHandler():
 
     @staticmethod
-    def __getVarType(name: str) -> eVarType:
+    def __get_var_type(name: str) -> eVarType:
         name = name.lower()
         if name == "int":
             return eVarType.Int
@@ -19,7 +19,7 @@ class ExpressionHandler():
             return eVarType.String
 
     @staticmethod
-    def __getDefaultValue(var_type: eVarType):
+    def __get_default_value(var_type: eVarType):
         if var_type == eVarType.Int:
             return 0
         elif var_type == eVarType.Real:
@@ -30,7 +30,7 @@ class ExpressionHandler():
             return ""
         
     @staticmethod
-    def convertToType(val: str, var_type: eVarType):
+    def convert_to_type(val: str, var_type: eVarType):
         try:
             if var_type == eVarType.Int:
                 return int(val)
@@ -47,7 +47,7 @@ class ExpressionHandler():
             
         
     @classmethod
-    def __parseVarInit(cls, expression: str) -> bool:
+    def __parse_var_init(cls, expression: str) -> bool:
         # Expression format: var name :type = value
         pattern = r"var\s+(\w+)\s*:\s*(\w+)\s*(?::=\s*(.+))?"
         match = re.match(pattern, expression.strip())
@@ -56,12 +56,12 @@ class ExpressionHandler():
             return False
 
         name, type_str, val = match.groups()
-        var_type = cls.__getVarType(type_str)
+        var_type = cls.__get_var_type(type_str)
 
         if val is None:
-            val = cls.__getDefaultValue(var_type)
+            val = cls.__get_default_value(var_type)
 
-        val = cls.convertToType(val, var_type)
+        val = cls.convert_to_type(val, var_type)
         
         if var_type == eVarType.String:
             if Util.is_quoted(val):
@@ -70,7 +70,7 @@ class ExpressionHandler():
         return VarStore.add(name, Var(var_type, val))
 
     @classmethod
-    def __parseVarUpdate(cls, name: str, args: str) -> bool:
+    def __parse_var_update(cls, name: str, args: str) -> bool:
         args = args.strip(':=').strip() # remove thr assignment operator
         val = eval(args, VarStore.getTable())
         VarStore.update(name, val)
@@ -78,6 +78,6 @@ class ExpressionHandler():
     @classmethod
     def parse(cls, prefix: str, args: str) -> bool:
         if prefix == 'var':
-            cls.__parseVarInit(prefix + ' ' +  args)
+            cls.__parse_var_init(prefix + ' ' +  args)
         else:
-            cls.__parseVarUpdate(prefix, args)
+            cls.__parse_var_update(prefix, args)

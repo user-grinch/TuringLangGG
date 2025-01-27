@@ -8,7 +8,7 @@ class InstructionHandler():
     ]
 
     @classmethod
-    def findHandler(cls, prefix: str) -> IBaseInstruction:
+    def find_handler(cls, prefix: str) -> IBaseInstruction:
         for e in cls.__commands:
             if e.getPrefix() == prefix:
                 return e
@@ -17,5 +17,5 @@ class InstructionHandler():
     
     @classmethod
     def parse(cls, prefix: str, args: str) -> bool:
-        handler: IBaseInstruction = cls.findHandler(prefix)
+        handler: IBaseInstruction = cls.find_handler(prefix)
         return handler.execute(prefix, args)

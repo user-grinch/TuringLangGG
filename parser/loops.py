@@ -23,14 +23,20 @@ class LoopHandler:
         '''
         expression = expression.strip()
         if expression.startswith(("loop", "repeat")):
-            return cls._handle_loop(line) # Loop body starts from next line
-
+            return cls._handle_loop(line) 
+        
+        elif expression.startswith("while"):
+            return cls._handle_while(expression, line)
+        
         elif expression.startswith("end loop"):
             return cls._handle_end_loop()
         
+        elif expression.startswith("end while"):
+            return cls._handle_end_while()
+        
         elif expression.startswith("until"):
             return cls._handle_until(expression)
-
+        
         return -1
 
     @classmethod
@@ -47,7 +53,7 @@ class LoopHandler:
         return -1
     
     @classmethod
-    def _handle_until(cls, expression: str) ->bool:
+    def _handle_until(cls, expression: str) -> bool:
         splits = expression.split(' ', 1)
         splits[1].replace('=', '==')
         shouldExit = eval(splits[1], VarStore.getTable())  
@@ -56,6 +62,33 @@ class LoopHandler:
             cls.__loopStack[-1]["shouldExit"] = True
        
         return cls._handle_end_loop()
+    
+    @classmethod
+    def _handle_while(cls, expression: str, line: int) -> int:
+        splits = expression.split(' ', 1)
+        
+        if len(splits) < 2:
+            raise SyntaxError("Invalid while statement: missing condition")
+
+        condition = splits[1].replace('=', '==').strip()
+        shouldContinue = eval(condition, VarStore.getTable())
+        
+        if shouldContinue:
+            cls.__loopStack.append({
+                "condition": condition,
+                "startLine": line,
+                "shouldExit": False 
+            })
+        
+        return -1  
+    
+    @classmethod
+    def _handle_end_while(cls) -> bool:
+        if eval(cls.__loopStack[-1]["condition"], VarStore.getTable()):
+            return cls.__loopStack[-1]["startLine"]
+        
+        cls.__loopStack.pop()
+        return -1
 
     @classmethod
     def _handle_end_loop(cls) -> bool:

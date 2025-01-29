@@ -26,7 +26,9 @@ class TokenParser():
             any("repeat" in string for string in lst) or \
             any("end loop" in string for string in lst) or \
             any("until" in string for string in lst) or \
-            any("exit when" in string for string in lst)
+            any("exit when" in string for string in lst) or \
+            any("while" in string for string in lst) or \
+            any("end while" in string for string in lst) 
 
     @classmethod
     def process(cls):

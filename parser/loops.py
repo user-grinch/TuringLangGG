@@ -1,53 +1,45 @@
 from varstore import VarStore
 
 class LoopHandler:
-    """Handles loop control structures: 'loop', 'repeat', 'while', 'until', and their endings."""
     _loop_stack = []
 
     @classmethod
     def is_in_loop(cls) -> bool:
-        """Checks if currently inside a loop."""
         return bool(cls._loop_stack)
 
     @classmethod
     def is_exiting(cls) -> bool:
-        """Checks if the current loop should exit."""
         return cls.is_in_loop() and cls._loop_stack[-1]["should_exit"]
 
     @classmethod
     def parse_and_route(cls, expression: str, line: int) -> int:
-        """
-        Parses loop-related expressions and determines execution flow.
-        Returns -1 if execution continues normally, otherwise returns the new line number.
-        """
         expression = expression.strip()
 
         if expression.startswith(("loop", "repeat")):
             return cls._start_loop(line)
         elif expression.startswith("while"):
             return cls._start_while(expression, line)
-        elif expression.startswith(("end loop", "end while")):
+        elif expression.startswith(("end loop", "end while", "end for")):
             return cls._end_loop()
         elif expression.startswith("until"):
             return cls._handle_until(expression)
+        elif expression.startswith("for"):
+            return cls._start_for(expression, line)
 
         return -1
 
     @classmethod
     def exit_current(cls):
-        """Marks the current loop for exit."""
         if cls.is_in_loop():
             cls._loop_stack[-1]["should_exit"] = True
 
     @classmethod
     def _start_loop(cls, line: int) -> int:
-        """Handles 'loop' or 'repeat' statements, which run indefinitely until explicitly exited."""
         cls._loop_stack.append({"start_line": line, "should_exit": False, "condition": None})
         return -1
 
     @classmethod
     def _start_while(cls, expression: str, line: int) -> int:
-        """Handles 'while' statements, storing conditions for evaluation."""
         parts = expression.split(' ', 1)
         if len(parts) < 2:
             raise SyntaxError("Invalid while statement: missing condition")
@@ -58,43 +50,80 @@ class LoopHandler:
             cls._loop_stack.append({"start_line": line, "should_exit": True, "condition": condition})
             return -1
 
-        # Evaluate the condition at the start of the loop
-        if not eval(condition, VarStore.getTable()):  
+        if not eval(condition, VarStore.getTable()):
             cls._loop_stack.append({"start_line": line, "should_exit": True, "condition": condition})
-            # If condition is false, skip the loop by returning -1
             return -1
         
-        # Condition is True, add loop to stack
         cls._loop_stack.append({"start_line": line, "should_exit": False, "condition": condition})
-        return -1  # Continue execution inside loop
-
+        return -1
 
     @classmethod
     def _handle_until(cls, expression: str) -> int:
-        """Handles 'until <condition>' statements, exiting loops when condition is met."""
         _, condition = expression.split(' ', 1)
-        if eval(condition, VarStore.getTable()):  
+        if eval(condition, VarStore.getTable()):
             cls.exit_current()
 
         return cls._end_loop()
 
     @classmethod
+    def _start_for(cls, expression: str, line: int) -> int:
+        parts = expression.split(' ', 1)
+        if len(parts) < 2:
+            raise SyntaxError("Invalid for statement: missing range expression")
+
+        range_expr = parts[1].strip()
+        step = 1
+
+        if " by " in range_expr:
+            range_expr, step_str = range_expr.split(" by ")
+            step = int(step_str.strip())
+        
+        if ".." not in range_expr:
+            raise SyntaxError("Invalid for statement: missing '..' in range expression")
+
+        var, range_str = range_expr.split(":")
+        var = var.strip()
+        start, end = range_str.split("..")
+        start = int(start.strip())
+        end = int(end.strip()) + 1  
+
+        cls._loop_stack.append({
+            "start_line": line,
+            "should_exit": False,
+            "start": start,
+            "cur": start,
+            "end": end,
+            "step": step,
+            "var": var
+        })
+        return -1
+
+    @classmethod
     def _end_loop(cls) -> int:
-        """Handles 'end loop' or 'end while' statements, controlling loop flow."""
         if not cls.is_in_loop():
-            return -1  # Avoid raising an error; just ignore unexpected 'end'
+            return -1  
 
         loop = cls._loop_stack[-1]
 
-        if loop["should_exit"]:  
+        if loop["should_exit"]:
             cls._loop_stack.pop()
-            return -1  # Exit the loop completely
+            return -1  
 
-        if loop["condition"]:
-            if not eval(loop["condition"], VarStore.getTable()):  
-                cls._loop_stack.pop()  # Exit the loop if condition is false
+        if "var" in loop: 
+            val = loop["cur"]
+
+            if val + loop["step"] < loop["end"]:
+                val += loop["step"]
+                cls._loop_stack[-1]["cur"] = val
+                VarStore.update(loop["var"], val)
+            else:
+                cls._loop_stack.pop()
+                return -1
+
+        if "condition" in loop:
+            if not eval(loop["condition"], VarStore.getTable()):
+                cls._loop_stack.pop()
                 return -1
             else:
-                return loop["start_line"]  # Jump back to loop start
-        
+                return loop["start_line"]
         return loop["start_line"]

@@ -40,7 +40,7 @@ class TokenParser():
             line: int = keys[idx]
             token: list[str] = tokens[keys[idx]]
 
-            route: int = LoopHandler.parseAndRoute(" ".join(token), idx)
+            route: int = LoopHandler.parse_and_route(" ".join(token), idx)
             if cls.__is_loop(token) and not LoopHandler.is_exiting():
                 if route > 0:
                     idx = route

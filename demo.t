@@ -12,10 +12,22 @@ put "Hello World"
 put "Hello World without comments"
 
 % Declare and initialize variables
-var n: int := 9
+var n: int := 0
 var test: real := 5.5
 var state: boolean := true
 var name: string := "Hello"
+
+loop
+    loop
+        exit when n > 5
+        put "Hello from ", n
+        n := n + 1
+    end loop
+
+    put "Hello World from ", n
+    n := n + 1
+    exit when n > 10
+end loop
 
 if n > 0 then
     if n > 10 then

@@ -1,3 +1,6 @@
+from varstore import VarStore
+
+
 class LoopHandler:
     __loopStack = []
     
@@ -19,12 +22,14 @@ class LoopHandler:
             Else the line number to route to
         '''
         expression = expression.strip()
-
-        if expression.startswith("loop"):
+        if expression.startswith(("loop", "repeat")):
             return cls._handle_loop(line) # Loop body starts from next line
 
         elif expression.startswith("end loop"):
             return cls._handle_end_loop()
+        
+        elif expression.startswith("until"):
+            return cls._handle_until(expression)
 
         return -1
 
@@ -40,9 +45,20 @@ class LoopHandler:
             "shouldExit": False 
         })
         return -1
+    
+    @classmethod
+    def _handle_until(cls, expression: str) ->bool:
+        splits = expression.split(' ', 1)
+        splits[1].replace('=', '==')
+        shouldExit = eval(splits[1], VarStore.getTable())  
+
+        if shouldExit:
+            cls.__loopStack[-1]["shouldExit"] = True
+       
+        return cls._handle_end_loop()
 
     @classmethod
-    def _handle_end_loop(cls):
+    def _handle_end_loop(cls) -> bool:
         if cls.__loopStack[-1]["shouldExit"]:
             cls.__loopStack[-1]["shouldExit"] = False
             cls.__loopStack.pop()

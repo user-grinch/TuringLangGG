@@ -23,7 +23,9 @@ class TokenParser():
 
     def __is_loop(lst: list[str]) -> bool:
         return any("loop" in string for string in lst) or \
+            any("repeat" in string for string in lst) or \
             any("end loop" in string for string in lst) or \
+            any("until" in string for string in lst) or \
             any("exit when" in string for string in lst)
 
     @classmethod

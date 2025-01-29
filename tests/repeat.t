@@ -1,3 +1,5 @@
+var n: int := 0
+
 repeat
     repeat
         put "Hello from ", n

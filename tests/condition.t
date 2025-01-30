@@ -1,3 +1,6 @@
+var n: int := 0
+var name: string := "Hello"
+
 if n > 0 then
     if n > 10 then
         put "The number is greater than 10."

@@ -1,4 +1,5 @@
 import re
+from util import Util
 from varstore import VarStore
 
 class ConditionalHandler:
@@ -15,19 +16,14 @@ class ConditionalHandler:
         return cls.__conditionalStack[-1]["lastConditionResult"]
 
     @classmethod
-    def parse(cls, expression: str) -> bool:
-        expression = expression.strip()
-        expression = expression.replace('=', '==') 
-
+    def try_parse(cls, lst: list[str]) -> bool:
+        expression: str = " ".join(lst)
         if expression.startswith("if"):
             return cls._handle_if(expression)
-
-        elif expression.startswith("elsif") or expression.startswith("else if"):
+        elif expression.startswith("elsif"):
             return cls._handle_else_if(expression)
-
         elif expression.startswith("else"):
             return cls._handle_else()
-
         elif expression.startswith("end if"):
             return cls._handle_end_if()
 
@@ -39,19 +35,15 @@ class ConditionalHandler:
         match = re.match(pattern, expression)
 
         if not match:
-            return False
+            raise Exception(f"Not a valid condition {match}")
 
         condition = match.group(1).strip()
-        try:
-            result = cls.evaluate_condition(condition)
-            cls.__conditionalStack.append({
-                "lastConditionResult": result,
-                "skipRest": result
-            })
-            return True
-        except Exception as e:
-            print(f"Error while evaluating `if` condition: {e}")
-            return False
+        result = Util.evaluate_condition(condition)
+        cls.__conditionalStack.append({
+            "lastConditionResult": result,
+            "skipRest": result
+        })
+        return True
 
     @classmethod
     def _handle_else_if(cls, expression: str) -> bool:
@@ -62,22 +54,19 @@ class ConditionalHandler:
         match = re.match(pattern, expression)
 
         if not match:
-            return False
+            raise Exception(f"Not a valid condition {match}")
 
         condition = match.group(2).strip()
-        try:
-            current_scope = cls.__conditionalStack[-1]
-            if current_scope["skipRest"]:
-                current_scope["lastConditionResult"] = False
-            else:
-                result = cls.evaluate_condition(condition)
-                current_scope["skipRest"] = current_scope["skipRest"] or result
-                current_scope["lastConditionResult"] = result
+        current_scope = cls.__conditionalStack[-1]
+        if current_scope["skipRest"]:
+            current_scope["lastConditionResult"] = False
+        else:
+            result = Util.evaluate_condition(condition)
+            current_scope["skipRest"] = current_scope["skipRest"] or result
+            current_scope["lastConditionResult"] = result
 
-            return True
-        except Exception as e:
-            print(f"Error while evaluating `else if` condition: {e}")
-            return False
+        return True
+      
 
     @classmethod
     def _handle_else(cls) -> bool:
@@ -94,18 +83,7 @@ class ConditionalHandler:
 
     @classmethod
     def _handle_end_if(cls) -> bool:
-        if not cls.is_in_condition():
-            return False
+        if cls.is_in_condition():
+            cls.__conditionalStack.pop()
 
-        cls.__conditionalStack.pop()  
         return True
-
-    @classmethod
-    def evaluate_condition(cls, condition: str) -> bool:
-        try:
-            result = eval(condition, {"__builtins__": None}, VarStore.getTable())
-            if not isinstance(result, bool):
-                raise ValueError(f"Condition did not evaluate to a boolean: {condition}")
-            return result
-        except Exception as e:
-            raise Exception(f"Failed to evaluate condition '{condition}': {e}")

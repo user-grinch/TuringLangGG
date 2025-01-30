@@ -35,8 +35,7 @@ class CMD_Exit(IBaseInstruction):
         
         splits = other.split(' ', 1)
         if (len(splits) >= 2 and splits[0] == 'when'):
-            splits[1].replace('=', '==')
-            val = eval(splits[1], VarStore.getTable())    
+            val = Util.evaluate_condition(splits[1])    
             if val == 0:
                 shouldExit = False
 

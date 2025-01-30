@@ -10,6 +10,12 @@ TuringLangGG is a Python-based interpreter for the Turing programming language. 
 - **Loops**: `loop`, `repeat`, `for` and `while` loops to repeat code execution.
 - **Functions**: Support for defining and calling functions.
 
+## Todo
+- **Functions/Procedures**
+- **Include**
+- **Arrays**
+- **Records**
+
 ## Installation
 
 To install TuringLangGG, follow these steps:

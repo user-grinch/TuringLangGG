@@ -1,6 +1,5 @@
 from util import Util
 from varstore import VarStore
-from enum import Enum
 
 class LoopHandler:
     _loop_stack = []

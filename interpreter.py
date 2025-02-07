@@ -18,5 +18,5 @@ class Interpreter():
         print(VarStore.getVarTable())
 
 if __name__ == '__main__':
-    Interpreter.run()
-    # Interpreter.debug("tests/loop.t")
+    # Interpreter.run()
+    Interpreter.debug("tests/function.t")

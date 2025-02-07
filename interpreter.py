@@ -10,6 +10,13 @@ class Interpreter():
             FileHandler.process(sys.argv[1]);
             TokenParser.process()
             print(VarStore.getVarTable())
+    
+    @classmethod
+    def debug(cls, string: str):
+        FileHandler.process(string);
+        TokenParser.process()
+        print(VarStore.getVarTable())
 
 if __name__ == '__main__':
     Interpreter.run()
+    # Interpreter.debug("tests/loop.t")

@@ -6,3 +6,5 @@ function factorial(n: int) : real
         result n * factorial(n - 1)
     end if
 end factorial
+
+factorial(5)

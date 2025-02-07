@@ -8,7 +8,7 @@ class LoopHandler:
 
     @classmethod
     def is_in_loop(cls) -> bool:
-        return bool(cls._loop_stack)
+        return len(cls._loop_stack) > 0
 
     @classmethod
     def is_exiting(cls) -> bool:
@@ -71,7 +71,7 @@ class LoopHandler:
     @classmethod
     def _handle_until(cls, expression: str) -> bool:
         _, condition = expression.split(' ', 1)
-        
+
         if Util.evaluate_condition(condition):
             cls.exit_current()
 
@@ -137,7 +137,7 @@ class LoopHandler:
                 cls._route = 0
                 return True
 
-        if loop["condition"]:
+        if "condition" in loop and loop["condition"]:
             if not Util.evaluate_condition(loop["condition"]):
                 cls._loop_stack.pop()
                 cls._route = 0

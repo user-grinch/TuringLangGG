@@ -9,7 +9,8 @@ class Util():
     
     @staticmethod
     def evaluate_condition(condition: str) -> bool:
-        condition = condition.replace('=', '==')
+        if not (condition.find('>=') or condition.find('<=') or condition.find('==')):
+            condition = condition.replace('=', '==')
         result = eval(condition, {"__builtins__": None}, VarStore.getTable())
         # if not isinstance(result, bool):
         #     raise ValueError(f"Condition did not evaluate to a boolean: {condition}")
